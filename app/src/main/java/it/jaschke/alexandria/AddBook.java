@@ -67,7 +67,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         @Override
         public void onReceive (Context context, Intent intent) {
             String errorString = intent.getStringExtra(BookService.MESSAGE_KEY);
-            if ( errorString != null ) {
+            if ( (mFetchEAN != null) && (errorString != null) ) {
                 int textResource = R.string.error_add_book_other;
                 if (errorString.contentEquals (BookService.FETCH_NOT_FOUND)) {
                     textResource = R.string.error_add_book_not_found;

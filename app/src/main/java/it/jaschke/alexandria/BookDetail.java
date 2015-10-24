@@ -22,7 +22,10 @@ import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
 import it.jaschke.alexandria.services.DownloadImage;
 
-
+/**
+ * BookDetail -- fragment used to support showing book detail. Only minimal changes were made
+ *     to the original Alexandria code base.
+ */
 public class BookDetail extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String EAN_KEY = "EAN";
@@ -95,11 +98,13 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         ((TextView) rootView.findViewById(R.id.fullBookTitle)).setText(bookTitle);
 
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-        shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text)+bookTitle);
-        shareActionProvider.setShareIntent(shareIntent);
+        if (shareActionProvider != null) {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + bookTitle);
+            shareActionProvider.setShareIntent(shareIntent);
+        }
 
         String bookSubTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
         ((TextView) rootView.findViewById(R.id.fullBookSubTitle)).setText(bookSubTitle);
@@ -124,6 +129,8 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
             rootView.findViewById(R.id.backButton).setVisibility(View.INVISIBLE);
         }
 
+        // Sometimes the soft keypad was shown in book detail, this makes sure it's hidden
+        Utility.hideSoftInput(getActivity());
     }
 
     @Override
@@ -131,6 +138,10 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
     }
 
+    /**
+     * removed below code on suggestion from Udacity discussion forum. This seems to address the
+     *     tablet issue where when a second book is selected, the book disappears.
+     *
     @Override
     public void onPause() {
         super.onDestroyView();
@@ -138,4 +149,5 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
             getActivity().getSupportFragmentManager().popBackStack();
         }
     }
+    */
 }
